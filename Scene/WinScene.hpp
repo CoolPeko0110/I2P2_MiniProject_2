@@ -13,6 +13,9 @@ public:
 	void Terminate() override;
 	void Update(float deltaTime) override;
 	void BackOnClick(int stage);
+	void OnKeyDown(int keyCode) override;
+	std::list<char> keyStrokes;
+	std::string NAME;
 };
 
 #endif // WINSCENE_HPP
