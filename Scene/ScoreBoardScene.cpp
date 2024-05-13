@@ -70,7 +70,7 @@ void ScoreBoardScene::Terminate() {
 }
 
 void ScoreBoardScene::BackOnClick(int stage) {
-    Engine::GameEngine::GetInstance().ChangeScene("start");
+    Engine::GameEngine::GetInstance().ChangeScene("stage-select");
 }
 
 void ScoreBoardScene::NextOnClick(int stage) {
@@ -82,7 +82,7 @@ void ScoreBoardScene::NextOnClick(int stage) {
     page++;
     Engine::ImageButton *btn;
     for(int i=0;i<5;i++) {
-        btn = new Engine::ImageButton("scoreboard/black.png", "scoreboard/black.png", halfW - 200, halfH * 3 / 2 - 550 + 100 * (i), 1000, 100);
+        btn = new Engine::ImageButton("scoreboard/black.png", "scoreboard/black.png", halfW - 1000, halfH * 3 / 2 - 550 + 100 * (i), 2000, 100);
         AddNewControlObject(btn);
     }
     int count = 0, num = 0;
@@ -113,7 +113,7 @@ void ScoreBoardScene::PrevOnClick(int stage) {
     int count = 0, num = 0;
     Engine::ImageButton *btn;
     for(int i=0;i<5;i++) {
-        btn = new Engine::ImageButton("scoreboard/black.png", "scoreboard/black.png", halfW - 200, halfH * 3 / 2 - 550 + 100 * (i), 1000, 100);
+        btn = new Engine::ImageButton("scoreboard/black.png", "scoreboard/black.png", halfW - 1000, halfH * 3 / 2 - 550 + 100 * (i), 2000, 100);
         AddNewControlObject(btn);
     }
     num = 0;

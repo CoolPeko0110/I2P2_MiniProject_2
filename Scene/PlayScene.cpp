@@ -466,6 +466,13 @@ std::vector<std::vector<int>> PlayScene::CalculateBFSDistance() {
 	// Reverse BFS to find path.
 	std::vector<std::vector<int>> map(MapHeight, std::vector<int>(std::vector<int>(MapWidth, -1)));
 	std::queue<Engine::Point> que;
+	std::vector<std::vector<int>> tag(MapHeight, std::vector<int>(std::vector<int>(MapWidth, -1)));
+	for(int i=0;i<MapHeight;i++) {
+		for(int j=0;j<MapWidth;j++) {
+			if(i==MapHeight-1 && j==MapWidth-1) tag[i][j] = 1;
+			else tag[i][j] = 0;
+		}
+	}
 	// Push end point.
 	// BFS from end point.
 	if (mapState[MapHeight - 1][MapWidth - 1] != TILE_DIRT)
@@ -474,10 +481,31 @@ std::vector<std::vector<int>> PlayScene::CalculateBFSDistance() {
 	map[MapHeight - 1][MapWidth - 1] = 0;
 	while (!que.empty()) {
 		Engine::Point p = que.front();
-
 		que.pop();
+		int temp = map[p.y][p.x]+1;
 		// TODO: [BFS PathFinding] (1/1): Implement a BFS starting from the most right-bottom block in the map.
 		//               For each step you should assign the corresponding distance to the most right-bottom block.
+		std::cout<<p.x<<" "<<p.y<<" "<<map[p.y][p.x]<<" "<<temp<<"\n";
+		if(p.y-1>=0 && mapState[p.y-1][p.x] == TILE_DIRT && !tag[p.y-1][p.x]) {
+			que.push(Engine::Point(p.x, p.y-1));
+			map[p.y-1][p.x] = temp;
+		}
+		if(p.y-1>=0) tag[p.y-1][p.x] = 1;
+		if(p.x-1>=0 && mapState[p.y][p.x-1] == TILE_DIRT && !tag[p.y][p.x-1]) {
+			que.push(Engine::Point(p.x-1, p.y));
+			map[p.y][p.x-1] = temp;
+		}
+		if(p.x-1>=0) tag[p.y][p.x-1] = 1;
+		if(p.y+1 < MapHeight && mapState[p.y+1][p.x] == TILE_DIRT && !tag[p.y+1][p.x]) {
+			que.push(Engine::Point(p.x, p.y+1));
+			map[p.y+1][p.x] = temp;
+		}
+		if(p.y+1<MapHeight) tag[p.y+1][p.x] = 1;
+		if(p.x+1 < MapWidth && mapState[p.y][p.x+1] == TILE_DIRT && !tag[p.y][p.x+1]) {
+			que.push(Engine::Point(p.x+1, p.y));
+			map[p.y][p.x+1] = temp;
+		}
+		if(p.x+1<MapWidth) tag[p.y][p.x+1] = 1;
 		//               mapState[y][x] is TILE_DIRT if it is empty.
 	}
 	return map;
