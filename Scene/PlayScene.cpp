@@ -29,6 +29,7 @@
 #include "Enemy/SoldierEnemy.hpp"
 #include "Enemy/TankEnemy.hpp"
 #include "Turret/TurretButton.hpp"
+extern int SCORE;
 
 bool PlayScene::DebugMode = false;
 const std::vector<Engine::Point> PlayScene::directions = { Engine::Point(-1, 0), Engine::Point(0, -1), Engine::Point(1, 0), Engine::Point(0, 1) };
@@ -79,32 +80,11 @@ void PlayScene::Initialize() {
 	bgmId = AudioHelper::PlayBGM("play.ogg");
 }
 void PlayScene::Terminate() {
-	if(!winornot) {
 		AudioHelper::StopBGM(bgmId);
 		AudioHelper::StopSample(deathBGMInstance);
 		deathBGMInstance = std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE>();
+		SCORE = GetMoney();
 		IScene::Terminate();
-	}
-	else {
-		char str1[100];
-		std::string temp = std::to_string(GetMoney());
-		int i;
-		for(i = 0; temp[i]<='9' && temp[i]>='0'; i++) {
-			str1[i] = temp[i];
-		}
-		str1[i] = '\n';
-		str1[i+1] = 0;
-		std::cout<<str1;
-		char str2[100] = "Johnny \0";
-		std::string filename = "Resource/scoreboard.txt";
-		std::fstream out(filename, std::ios::app);
-		out<<str2<<str1;
-		out.close();
-		AudioHelper::StopBGM(bgmId);
-		AudioHelper::StopSample(deathBGMInstance);
-		deathBGMInstance = std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE>();
-		IScene::Terminate();
-	}
 }
 void PlayScene::Update(float deltaTime) {
 	// If we use deltaTime directly, then we might have Bullet-through-paper problem.
@@ -329,7 +309,6 @@ void PlayScene::Hit() {
 	if (lives <= 0) {
 		//edited
 		//Engine::GameEngine::GetInstance().ChangeScene("lose-scene");
-		winornot = 0;
 		Engine::GameEngine::GetInstance().ChangeScene("lose");
 		//
 	}

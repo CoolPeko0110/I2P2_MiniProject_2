@@ -50,15 +50,21 @@ void ScoreBoardScene::Initialize() {
     std::ifstream fin(filename);
     int i;
     for( i=0 ; !fin.eof() ; i++ ) {
-        std::string name, scorestr;
-        fin>>name>>scorestr;
+        std::string name, scorestr, date;
+        fin>>name>>scorestr>>date;
         int score = std::atoi(scorestr.c_str());
-        if(name!="\0") Score.insert(std::pair<int, std::string>(score, name));
+        if(name!="\0") {
+            Score.insert(std::pair<int, std::string>(score, name));
+            Date.insert(std::pair<int, std::string>(score, date));
+        }
+    }
+    for(auto iter = Score.rbegin(), it = Date.rbegin();iter!=Score.rend();iter++, it++) {
+        std::cout<<iter->second<<" "<<iter->first<<" "<<it->second<<"\n";
     }
     numofpage = (i-1)/5 - (((i-1)%5)?0:1);
     int count = 5;
-    for(auto iter = Score.rbegin(); count-- && iter!=Score.rend(); iter++) {
-        AddNewObject(new Engine::Label(iter->second+" "+std::to_string(iter->first), "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (4-count), 255, 255, 255, 255, 0.5, 0.5));
+    for(auto iter = Score.rbegin(), it = Date.rbegin(); count-- && iter!=Score.rend(); iter++, it++) {
+        AddNewObject(new Engine::Label(iter->second+" "+std::to_string(iter->first)+" "+it->second, "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (4-count), 255, 255, 255, 255, 0.5, 0.5));
     }
     fin.close();
     //
@@ -86,16 +92,16 @@ void ScoreBoardScene::NextOnClick(int stage) {
         AddNewControlObject(btn);
     }
     int count = 0, num = 0;
-    for(auto iter = Score.rbegin(); count <= page && iter!=Score.rend(); iter++, num++) {
+    for(auto iter = Score.rbegin(), it = Date.rbegin(); count <= page && iter!=Score.rend(); iter++, num++, it++) {
         if(num == 5) {
             num = 0;
             count++;
         }
         if(count == page) {
-            if(iter->second != "\0") AddNewObject(new Engine::Label(iter->second+" "+std::to_string(iter->first), "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (num), 255, 255, 255, 255, 0.5, 0.5));
+            if(iter->second != "\0") AddNewObject(new Engine::Label(iter->second+" "+std::to_string(iter->first)+" "+it->second, "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (num), 255, 255, 255, 255, 0.5, 0.5));
         }
         else if(count < page){
-            if(iter->second != "\0") AddNewObject(new Engine::Label(iter->second+" "+std::to_string(iter->first), "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (num), 0, 0, 0, 255, 0.5, 0.5));
+            if(iter->second != "\0") AddNewObject(new Engine::Label(iter->second+" "+std::to_string(iter->first)+" "+it->second, "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (num), 0, 0, 0, 255, 0.5, 0.5));
         }
         else {
             break;
@@ -117,21 +123,19 @@ void ScoreBoardScene::PrevOnClick(int stage) {
         AddNewControlObject(btn);
     }
     num = 0;
-    for(auto iter = Score.rbegin(); count <= page && iter!=Score.rend(); iter++, num++) {
+    for(auto iter = Score.rbegin(), it = Date.rbegin(); count <= page && iter!=Score.rend(); iter++, num++, it++) {
         if(num == 5) {
             num = 0;
             count++;
         }
         if(count == page) {
-            if(iter->second != "\0") AddNewObject(new Engine::Label(iter->second+" "+std::to_string(iter->first), "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (num), 255, 255, 255, 255, 0.5, 0.5));
+            if(iter->second != "\0") AddNewObject(new Engine::Label(iter->second+" "+std::to_string(iter->first)+" "+it->second, "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (num), 255, 255, 255, 255, 0.5, 0.5));
         }
         else if(count < page){
-            if(iter->second != "\0") AddNewObject(new Engine::Label(iter->second+" "+std::to_string(iter->first), "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (num), 0, 0, 0, 255, 0.5, 0.5));
+            if(iter->second != "\0") AddNewObject(new Engine::Label(iter->second+" "+std::to_string(iter->first)+" "+it->second, "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (num), 0, 0, 0, 255, 0.5, 0.5));
         }
         else {
             break;
         }
     }
 }
-
-

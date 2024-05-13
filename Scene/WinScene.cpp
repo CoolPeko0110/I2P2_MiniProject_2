@@ -14,12 +14,16 @@
 #include "Engine/Point.hpp"
 #include "WinScene.hpp"
 
+#include <ctime>
+extern int SCORE;
+
 void WinScene::Initialize() {
 	ticks = 0;
 	int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
 	int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
 	int halfW = w / 2;
 	int halfH = h / 2;
+	NAME = "\0";
 	AddNewObject(new Engine::Image("win/outline.png", halfW, halfH-246, 100, 60, 0.5, 0.5));
 	AddNewObject(new Engine::Image("win/benjamin-sad.png", halfW, halfH, 0, 0, 0.5, 0.5));
 	AddNewObject(new Engine::Label("You Win!", "pirulen.ttf", 48, halfW, halfH / 4 -10, 255, 255, 255, 255, 0.5, 0.5));
@@ -32,6 +36,25 @@ void WinScene::Initialize() {
 	AddNewObject(new Engine::Label(NAME, "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 454, 255, 255, 255, 255, 0.5, 0.5));
 }
 void WinScene::Terminate() {
+	time_t now = time(0);
+	tm *ltm = localtime(&now);
+	std::string date = std::to_string(ltm->tm_mon+1) + "/" + std::to_string(ltm->tm_mday);
+
+	char str1[100];
+	std::string temp = std::to_string(SCORE);
+	int i;
+	for(i = 0; temp[i]<='9' && temp[i]>='0'; i++) {
+		str1[i] = temp[i];
+	}
+	str1[i] = '\n';
+	str1[i+1] = 0;
+	std::cout<<str1;
+	std::string filename = "Resource/scoreboard.txt";
+	std::fstream out(filename, std::ios::app);
+	if(NAME == "\0") NAME = "WHORU\0";
+	out<<NAME.c_str()<<" "<<str1<<" "<<date.c_str()<<"\n";
+	out.close();
+	//std::cout<<NAME.c_str()<<str1<<"\n";
 	IScene::Terminate();
 	AudioHelper::StopBGM(bgmId);
 }
@@ -53,7 +76,7 @@ void WinScene::OnKeyDown(int keyCode) {
 		keyStrokes.push_back(keyCode-ALLEGRO_KEY_A+'A');
 	}
 	else if(keyCode == ALLEGRO_KEY_BACKSPACE) {
-		keyStrokes.pop_back();
+		if(!keyStrokes.empty()) keyStrokes.pop_back();
 	}
 	NAME = "\0";
 	int count = 0;
