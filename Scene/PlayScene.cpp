@@ -7,6 +7,7 @@
 #include <queue>
 #include <string>
 #include <memory>
+#include <iostream>
 
 #include "Engine/AudioHelper.hpp"
 #include "UI/Animation/DirtyEffect.hpp"
@@ -20,6 +21,8 @@
 #include "UI/Animation/Plane.hpp"
 #include "Enemy/PlaneEnemy.hpp"
 #include "PlayScene.hpp"
+
+#include "WinScene.hpp"
 #include "Engine/Resources.hpp"
 #include "Enemy/SoldierEnemy.hpp"
 #include "Enemy/TankEnemy.hpp"
@@ -39,9 +42,9 @@ Engine::Point PlayScene::GetClientSize() {
 	return Engine::Point(MapWidth * BlockSize, MapHeight * BlockSize);
 }
 void PlayScene::Initialize() {
-	// TODO: [HACKATHON-3-BUG] (1/5): There's a bug in this file, which crashes the game when you lose. Try to find it.
-	// TODO: [HACKATHON-3-BUG] (2/5): Find out the cheat code to test.
-    // TODO: [HACKATHON-3-BUG] (2/5): It should generate a Plane, and add 10000 to the money, but it doesn't work now.
+	// TODO: [HACKATHON-3-BUG-FIXED] (1/5): There's a bug in this file, which crashes the game when you lose. Try to find it.
+	// TODO: [HACKATHON-3-BUG-FIXED] (2/5): Find out the cheat code to test.
+    // TODO: [HACKATHON-3-BUG-FIXED] (2/5): It should generate a Plane, and add 10000 to the money, but it doesn't work now.
 	mapState.clear();
 	keyStrokes.clear();
 	ticks = 0;
@@ -74,6 +77,20 @@ void PlayScene::Initialize() {
 	bgmId = AudioHelper::PlayBGM("play.ogg");
 }
 void PlayScene::Terminate() {
+	char str1[100];
+	std::string temp = std::to_string(GetMoney());
+	int i;
+	for(i = 0; temp[i]<='9' && temp[i]>='0'; i++) {
+		str1[i] = temp[i];
+	}
+	str1[i] = '\n';
+	str1[i+1] = 0;
+	std::cout<<str1;
+	char str2[100] = "Johnny \0";
+	std::string filename = "Resource/scoreboard.txt";
+	std::fstream out(filename, std::ios::app);
+	out<<str2<<str1;
+	out.close();
 	AudioHelper::StopBGM(bgmId);
 	AudioHelper::StopSample(deathBGMInstance);
 	deathBGMInstance = std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE>();
@@ -140,6 +157,7 @@ void PlayScene::Update(float deltaTime) {
 				delete EffectGroup;
 				delete UIGroup;
 				delete imgTarget;*/
+
 				Engine::GameEngine::GetInstance().ChangeScene("win");
 			}
 			continue;
@@ -271,6 +289,7 @@ void PlayScene::OnKeyDown(int keyCode) {
 				++it;
 			}
 			EffectGroup->AddNewObject(new Plane());
+			EarnMoney(10000);
 		}
 	}
 	if (keyCode == ALLEGRO_KEY_Q) {
@@ -295,7 +314,10 @@ void PlayScene::Hit() {
 	lives--;
 	UILives->Text = std::string("Life ") + std::to_string(lives);
 	if (lives <= 0) {
-		Engine::GameEngine::GetInstance().ChangeScene("lose-scene");
+		//edited
+		//Engine::GameEngine::GetInstance().ChangeScene("lose-scene");
+		Engine::GameEngine::GetInstance().ChangeScene("lose");
+		//
 	}
 }
 int PlayScene::GetMoney() const {
@@ -341,8 +363,8 @@ void PlayScene::ReadMap() {
 	}
 }
 void PlayScene::ReadEnemyWave() {
-    // TODO: [HACKATHON-3-BUG] (3/5): Trace the code to know how the enemies are created.
-    // TODO: [HACKATHON-3-BUG] (3/5): There is a bug in these files, which let the game only spawn the first enemy, try to fix it.
+    // TODO: [HACKATHON-3-BUG-FIXED] (3/5): Trace the code to know how the enemies are created.
+    // TODO: [HACKATHON-3-BUG-FIXED] (3/5): There is a bug in these files, which let the game only spawn the first enemy, try to fix it.
     std::string filename = std::string("Resource/enemy") + std::to_string(MapId) + ".txt";
 	// Read enemy file.
 	float type, wait, repeat;
@@ -452,6 +474,7 @@ std::vector<std::vector<int>> PlayScene::CalculateBFSDistance() {
 	map[MapHeight - 1][MapWidth - 1] = 0;
 	while (!que.empty()) {
 		Engine::Point p = que.front();
+
 		que.pop();
 		// TODO: [BFS PathFinding] (1/1): Implement a BFS starting from the most right-bottom block in the map.
 		//               For each step you should assign the corresponding distance to the most right-bottom block.
