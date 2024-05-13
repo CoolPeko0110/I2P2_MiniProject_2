@@ -104,6 +104,8 @@ add_executable(2024_I2P2_TowerDefense_with_answer
         Turret/ShapaTurret.hpp
         Bullet/ShapaBullet.cpp
         Bullet/ShapaBullet.hpp
+        Enemy/PretenderEnemy.cpp
+        Enemy/PretenderEnemy.hpp
         #        UI/Component/TextInput.cpp
 #        UI/Component/TextInput.hpp
 )

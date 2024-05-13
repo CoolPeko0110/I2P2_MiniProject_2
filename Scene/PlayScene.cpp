@@ -24,6 +24,7 @@
 #include "PlayScene.hpp"
 
 #include "WinScene.hpp"
+#include "Enemy/PretenderEnemy.hpp"
 #include "Engine/Resources.hpp"
 #include "Enemy/SoldierEnemy.hpp"
 #include "Enemy/TankEnemy.hpp"
@@ -183,6 +184,9 @@ void PlayScene::Update(float deltaTime) {
         // TODO: [CUSTOM-ENEMY]: You need to modify 'Resource/enemy1.txt', or 'Resource/enemy2.txt' to spawn the 4th enemy.
         //         The format is "[EnemyId] [TimeDelay] [Repeat]".
         // TODO: [CUSTOM-ENEMY]: Enable the creation of the enemy.
+        case 4:
+        	EnemyGroup->AddNewObject(enemy = new PretenderEnemy(SpawnCoordinate.x, SpawnCoordinate.y));
+        	break;
 		default:
 			continue;
 		}
