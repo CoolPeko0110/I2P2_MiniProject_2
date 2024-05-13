@@ -19,6 +19,7 @@ namespace Engine {
 
 class PlayScene final : public Engine::IScene {
 private:
+	int winornot;
 	enum TileType {
 		TILE_DIRT,
 		TILE_FLOOR,

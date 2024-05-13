@@ -79,24 +79,32 @@ void PlayScene::Initialize() {
 	bgmId = AudioHelper::PlayBGM("play.ogg");
 }
 void PlayScene::Terminate() {
-	char str1[100];
-	std::string temp = std::to_string(GetMoney());
-	int i;
-	for(i = 0; temp[i]<='9' && temp[i]>='0'; i++) {
-		str1[i] = temp[i];
+	if(!winornot) {
+		AudioHelper::StopBGM(bgmId);
+		AudioHelper::StopSample(deathBGMInstance);
+		deathBGMInstance = std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE>();
+		IScene::Terminate();
 	}
-	str1[i] = '\n';
-	str1[i+1] = 0;
-	std::cout<<str1;
-	char str2[100] = "Johnny \0";
-	std::string filename = "Resource/scoreboard.txt";
-	std::fstream out(filename, std::ios::app);
-	out<<str2<<str1;
-	out.close();
-	AudioHelper::StopBGM(bgmId);
-	AudioHelper::StopSample(deathBGMInstance);
-	deathBGMInstance = std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE>();
-	IScene::Terminate();
+	else {
+		char str1[100];
+		std::string temp = std::to_string(GetMoney());
+		int i;
+		for(i = 0; temp[i]<='9' && temp[i]>='0'; i++) {
+			str1[i] = temp[i];
+		}
+		str1[i] = '\n';
+		str1[i+1] = 0;
+		std::cout<<str1;
+		char str2[100] = "Johnny \0";
+		std::string filename = "Resource/scoreboard.txt";
+		std::fstream out(filename, std::ios::app);
+		out<<str2<<str1;
+		out.close();
+		AudioHelper::StopBGM(bgmId);
+		AudioHelper::StopSample(deathBGMInstance);
+		deathBGMInstance = std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE>();
+		IScene::Terminate();
+	}
 }
 void PlayScene::Update(float deltaTime) {
 	// If we use deltaTime directly, then we might have Bullet-through-paper problem.
@@ -159,7 +167,7 @@ void PlayScene::Update(float deltaTime) {
 				delete EffectGroup;
 				delete UIGroup;
 				delete imgTarget;*/
-
+				winornot = 1;
 				Engine::GameEngine::GetInstance().ChangeScene("win");
 			}
 			continue;
@@ -321,6 +329,7 @@ void PlayScene::Hit() {
 	if (lives <= 0) {
 		//edited
 		//Engine::GameEngine::GetInstance().ChangeScene("lose-scene");
+		winornot = 0;
 		Engine::GameEngine::GetInstance().ChangeScene("lose");
 		//
 	}
