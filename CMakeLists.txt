@@ -100,6 +100,10 @@ add_executable(2024_I2P2_TowerDefense_with_answer
         Scene/SettingsScene.hpp
         Scene/ScoreBoardScene.cpp
         Scene/ScoreBoardScene.hpp
+        Turret/ShapaTurret.cpp
+        Turret/ShapaTurret.hpp
+        Bullet/ShapaBullet.cpp
+        Bullet/ShapaBullet.hpp
         #        UI/Component/TextInput.cpp
 #        UI/Component/TextInput.hpp
 )
