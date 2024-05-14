@@ -38,7 +38,7 @@ void WinScene::Initialize() {
 void WinScene::Terminate() {
 	time_t now = time(0);
 	tm *ltm = localtime(&now);
-	std::string date = std::to_string(ltm->tm_mon+1) + "/" + std::to_string(ltm->tm_mday);
+	std::string date = std::to_string(1+ltm->tm_mon) + "/" + std::to_string(ltm->tm_mday);
 
 	char str1[100];
 	std::string temp = std::to_string(SCORE);

@@ -23,7 +23,7 @@
 
 
 void ScoreBoardScene::Initialize() {
-    page = 0;
+    if(!page) page = 0;
     numofpage = 0;
     int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
     int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
@@ -62,9 +62,21 @@ void ScoreBoardScene::Initialize() {
         std::cout<<iter->second<<" "<<iter->first<<" "<<it->second<<"\n";
     }
     numofpage = (i-1)/5 - (((i-1)%5)?0:1);
-    int count = 5;
-    for(auto iter = Score.rbegin(), it = Date.rbegin(); count-- && iter!=Score.rend(); iter++, it++) {
-        AddNewObject(new Engine::Label(iter->second+" "+std::to_string(iter->first)+" "+it->second, "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (4-count), 255, 255, 255, 255, 0.5, 0.5));
+    int count = 0, num = 0;
+    for(auto iter = Score.rbegin(), it = Date.rbegin(); count <= page && iter!=Score.rend(); iter++, num++, it++) {
+        if(num == 5) {
+            num = 0;
+            count++;
+        }
+        if(count == page) {
+            if(iter->second != "\0") AddNewObject(new Engine::Label(iter->second+" "+std::to_string(iter->first)+" "+it->second, "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (num), 255, 255, 255, 255, 0.5, 0.5));
+        }
+        else if(count < page){
+            if(iter->second != "\0") AddNewObject(new Engine::Label(iter->second+" "+std::to_string(iter->first)+" "+it->second, "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (num), 0, 0, 0, 255, 0.5, 0.5));
+        }
+        else {
+            break;
+        }
     }
     fin.close();
     //
@@ -76,66 +88,18 @@ void ScoreBoardScene::Terminate() {
 }
 
 void ScoreBoardScene::BackOnClick(int stage) {
+    page = 0;
     Engine::GameEngine::GetInstance().ChangeScene("stage-select");
 }
 
 void ScoreBoardScene::NextOnClick(int stage) {
     if(page==numofpage) return;
-    int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
-    int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
-    int halfW = w / 2;
-    int halfH = h / 2;
     page++;
-    Engine::ImageButton *btn;
-    for(int i=0;i<5;i++) {
-        btn = new Engine::ImageButton("scoreboard/black.png", "scoreboard/black.png", halfW - 1000, halfH * 3 / 2 - 550 + 100 * (i), 2000, 100);
-        AddNewControlObject(btn);
-    }
-    int count = 0, num = 0;
-    for(auto iter = Score.rbegin(), it = Date.rbegin(); count <= page && iter!=Score.rend(); iter++, num++, it++) {
-        if(num == 5) {
-            num = 0;
-            count++;
-        }
-        if(count == page) {
-            if(iter->second != "\0") AddNewObject(new Engine::Label(iter->second+" "+std::to_string(iter->first)+" "+it->second, "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (num), 255, 255, 255, 255, 0.5, 0.5));
-        }
-        else if(count < page){
-            if(iter->second != "\0") AddNewObject(new Engine::Label(iter->second+" "+std::to_string(iter->first)+" "+it->second, "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (num), 0, 0, 0, 255, 0.5, 0.5));
-        }
-        else {
-            break;
-        }
-    }
+    Engine::GameEngine::GetInstance().ChangeScene("scoreboard");
 }
 
 void ScoreBoardScene::PrevOnClick(int stage) {
     if(!page) return;
     page--;
-    int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
-    int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
-    int halfW = w / 2;
-    int halfH = h / 2;
-    int count = 0, num = 0;
-    Engine::ImageButton *btn;
-    for(int i=0;i<5;i++) {
-        btn = new Engine::ImageButton("scoreboard/black.png", "scoreboard/black.png", halfW - 1000, halfH * 3 / 2 - 550 + 100 * (i), 2000, 100);
-        AddNewControlObject(btn);
-    }
-    num = 0;
-    for(auto iter = Score.rbegin(), it = Date.rbegin(); count <= page && iter!=Score.rend(); iter++, num++, it++) {
-        if(num == 5) {
-            num = 0;
-            count++;
-        }
-        if(count == page) {
-            if(iter->second != "\0") AddNewObject(new Engine::Label(iter->second+" "+std::to_string(iter->first)+" "+it->second, "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (num), 255, 255, 255, 255, 0.5, 0.5));
-        }
-        else if(count < page){
-            if(iter->second != "\0") AddNewObject(new Engine::Label(iter->second+" "+std::to_string(iter->first)+" "+it->second, "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (num), 0, 0, 0, 255, 0.5, 0.5));
-        }
-        else {
-            break;
-        }
-    }
+    Engine::GameEngine::GetInstance().ChangeScene("scoreboard");
 }
