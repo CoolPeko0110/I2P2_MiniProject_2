@@ -13,7 +13,7 @@ class ScoreBoardScene final : public Engine::IScene {
 private:
     int page = 0;
     int numofpage;
-    std::multimap<int, std::string> Score;
+    std::multimap<int, std::multimap<std::string, std::string>> Score;
     std::multimap<int, std::string> Date;
 
 public:
