@@ -59,11 +59,14 @@ void ScoreBoardScene::Initialize() {
             Score.insert(std::make_pair(score, temp));
         }
     }
+    /*
     for(auto iter = Score.rbegin();iter!=Score.rend();iter++) {
         for(auto it = iter->second.begin();it!=iter->second.end();it++) {
             std::cout<<it->first<<" "<<iter->first<<" "<<it->second<<"\n";
         }
     }
+    (for debugging)
+    */
     numofpage = (i-1)/5 - (((i-1)%5)?0:1);
     int count = 0, num = 0;
     for(auto iter = Score.rbegin(); count <= page && iter!=Score.rend(); iter++, num++) {
@@ -73,10 +76,7 @@ void ScoreBoardScene::Initialize() {
                 count++;
             }
             if(count == page) {
-                if(it->first != "\0" && it->second != "\0") AddNewObject(new Engine::Label(it->first+" "+std::to_string(iter->first)+" "+it->second, "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (num), 255, 255, 255, 255, 0.5, 0.5));
-            }
-            else if(count < page){
-                if(it->first != "\0" && it->second != "\0") AddNewObject(new Engine::Label(it->first+" "+std::to_string(iter->first)+" "+it->second, "pirulen.ttf", 48, halfW, halfH * 3 / 2 - 520 + 100 * (num), 0, 0, 0, 255, 0.5, 0.5));
+                if(it->first != "\0" && it->second != "\0") AddNewObject(new Engine::Label(it->first+" "+std::to_string(iter->first)+" "+it->second, "pirulen.ttf", 40, halfW, halfH * 3 / 2 - 520 + 100 * (num), 0, 158, 96, 255, 0.5, 0.5));
             }
         }
     }

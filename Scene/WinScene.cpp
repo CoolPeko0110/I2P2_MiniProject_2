@@ -48,7 +48,7 @@ void WinScene::Terminate() {
 	}
 	str1[i] = '\n';
 	str1[i+1] = 0;
-	std::cout<<str1;
+	//std::cout<<str1; (for debugging)
 	std::string filename = "Resource/scoreboard.txt";
 	std::fstream out(filename, std::ios::app);
 	if(NAME == "\0") NAME = "WHORU\0";
@@ -81,11 +81,11 @@ void WinScene::OnKeyDown(int keyCode) {
 	NAME = "\0";
 	int count = 0;
 	for(auto iter = keyStrokes.begin();iter!=keyStrokes.end();iter++) {
-		std::cout<<*iter;
+		//std::cout<<*iter; (for debugging)
 		NAME += *iter;
 		count++;
 	}
-	std::cout<<"\n";
+	//std::cout<<"\n"; (for debugging)
 	int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
 	int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
 	int halfW = w / 2;
