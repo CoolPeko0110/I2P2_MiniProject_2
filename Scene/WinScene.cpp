@@ -23,7 +23,7 @@ void WinScene::Initialize() {
 	int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
 	int halfW = w / 2;
 	int halfH = h / 2;
-	NAME = "\0";
+	NAME.clear();
 	AddNewObject(new Engine::Image("win/outline.png", halfW, halfH-246, 100, 60, 0.5, 0.5));
 	AddNewObject(new Engine::Image("win/benjamin-sad.png", halfW, halfH, 0, 0, 0.5, 0.5));
 	AddNewObject(new Engine::Label("You Win!", "pirulen.ttf", 48, halfW, halfH / 4 -10, 255, 255, 255, 255, 0.5, 0.5));
@@ -68,6 +68,7 @@ void WinScene::Update(float deltaTime) {
 }
 void WinScene::BackOnClick(int stage) {
 	// Change to select scene.
+	keyStrokes.clear();
 	Engine::GameEngine::GetInstance().ChangeScene("stage-select");
 }
 void WinScene::OnKeyDown(int keyCode) {
@@ -78,7 +79,7 @@ void WinScene::OnKeyDown(int keyCode) {
 	else if(keyCode == ALLEGRO_KEY_BACKSPACE) {
 		if(!keyStrokes.empty()) keyStrokes.pop_back();
 	}
-	NAME = "\0";
+	NAME.clear();
 	int count = 0;
 	for(auto iter = keyStrokes.begin();iter!=keyStrokes.end();iter++) {
 		//std::cout<<*iter; (for debugging)

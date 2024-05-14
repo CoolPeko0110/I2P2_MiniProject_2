@@ -31,6 +31,5 @@ int main(int argc, char **argv) {
 	//game.Start("stage-select", 60, 1600, 832);
 	game.Start("start", 60, 1600, 832);
 	//
-	game.Start("settings", 60, 1600, 832);
 	return 0;
 }
