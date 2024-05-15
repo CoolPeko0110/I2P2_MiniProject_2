@@ -199,20 +199,20 @@ void CustomStageScene::ConstructUI() {
 	// Background
 	UIGroup->AddNewObject(new Engine::Image("play/sand.png", 1280, 0, 320, 832));
 	// Text
-	UIGroup->AddNewObject(new Engine::Label(std::string("CUSTOM"), "pirulen.ttf", 32, 1294, 0));
+	UIGroup->AddNewObject(new Engine::Label(std::string("CUSTOM"), "pirulen.ttf", 32, 1345, 0));
 	TurretButton* btn;
 	// Button 1
 	btn = new TurretButton("play/floor.png", "play/dirt.png",
-		Engine::Sprite("play/shovel.png", 1370, 136, 0, 0, 0, 0),
-		Engine::Sprite("play/shovel.png", 1370, 136, 0, 0, 0, 0)
-		, 1370, 136, 0);
+		Engine::Sprite("play/shovel.png", 1360, 186, 0, 0, 0, 0),
+		Engine::Sprite("play/shovel.png", 1360, 186, 0, 0, 0, 0)
+		, 1360, 186, 0);
 	btn->SetOnClickCallback(std::bind(&CustomStageScene::UIBtnClicked, this, 0));
 	UIGroup->AddNewControlObject(btn);
 	// Button 2
 	btn = new TurretButton("play/floor.png", "play/dirt.png",
-		Engine::Sprite("play/place.png", 1446, 136, 0, 0, 0, 0),
-		Engine::Sprite("play/place.png", 1446, 136, 0, 0, 0, 0)
-		, 1446, 136, 0);
+		Engine::Sprite("play/place.png", 1456, 186, 0, 0, 0, 0),
+		Engine::Sprite("play/place.png", 1456, 186, 0, 0, 0, 0)
+		, 1456, 186, 0);
 	btn->SetOnClickCallback(std::bind(&CustomStageScene::UIBtnClicked, this, 1));
 	UIGroup->AddNewControlObject(btn);
 	// Button 3
@@ -256,11 +256,11 @@ void CustomStageScene::ConstructUI() {
 	AddNewControlObject(bn);
 	AddNewObject(new Engine::Label("Save", "pirulen.ttf", 30, w-shift, h-shift-60, 0, 0, 0, 255, 0.5, 0.5));
 	// Button 5
-	bn = new Engine::ImageButton("play/undo.png", "play/sureundo.png", w-shift-100, h-shift-600, 100, 50);
+	bn = new Engine::ImageButton("play/undo.png", "play/sureundo.png", w-shift-100, h-shift-580, 100, 50);
 	bn->SetOnClickCallback(std::bind(&CustomStageScene::UIBtnClicked, this, 9));
 	AddNewControlObject(bn);
 	// Button 6
-	bn = new Engine::ImageButton("play/do.png", "play/suredo.png", w-shift, h-shift-600, 100, 50);
+	bn = new Engine::ImageButton("play/do.png", "play/suredo.png", w-shift, h-shift-580, 100, 50);
 	bn->SetOnClickCallback(std::bind(&CustomStageScene::UIBtnClicked, this, 10));
 	AddNewControlObject(bn);
 }
