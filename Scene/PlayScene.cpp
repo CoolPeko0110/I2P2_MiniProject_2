@@ -319,7 +319,7 @@ void PlayScene::OnKeyDown(int keyCode) {
 		UIBtnClicked(2);
 	}
 	// TODO: [CUSTOM-TURRET]: Make specific key to create the turret.
-	else if (keyCode == ALLEGRO_KEY_E) {
+	else if (keyCode == ALLEGRO_KEY_R) {
 		// Hotkey for ShapaTurret.
 		UIBtnClicked(3);
 	}

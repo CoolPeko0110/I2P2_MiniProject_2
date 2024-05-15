@@ -38,6 +38,8 @@ Engine::Point CustomStageScene::GetClientSize() {
 	return Engine::Point(MapWidth * BlockSize, MapHeight * BlockSize);
 }
 void CustomStageScene::Initialize() {
+	undoactions.clear();
+	doactions.clear();
 	// TODO: [HACKATHON-3-BUG-FIXED] (1/5): There's a bug in this file, which crashes the game when you lose. Try to find it.
 	// TODO: [HACKATHON-3-BUG-FIXED] (2/5): Find out the cheat code to test.
     // TODO: [HACKATHON-3-BUG-FIXED] (2/5): It should generate a Plane, and add 10000 to the money, but it doesn't work now.
@@ -85,7 +87,6 @@ void CustomStageScene::Terminate() {
 void CustomStageScene::Update(float deltaTime) {
 	if (previewTool) {
 		previewTool->Position = Engine::GameEngine::GetInstance().GetMousePosition();
-		// To keep responding when paused.
 		previewTool->Update(deltaTime);
 	}
 }
@@ -130,13 +131,27 @@ void CustomStageScene::OnMouseUp(int button, int mx, int my) {
 		}
 		if(previewTool) {
 			if(!tooltype) {
+				TileType tempTILE = mapState[y][x];
+				std::cout<<tempTILE<<" "<<mapState[y][x]<<"\n";
 				AudioHelper::PlayAudio("digging.wav");
 				mapState[y][x] = TILE_FLOOR;
+				if(tempTILE != mapState[y][x]) {
+					std::multimap<int, int> tempACT;
+					tempACT.insert(std::make_pair(y, x));
+					undoactions.push_back(tempACT);
+				}
 				TileMapGroup->AddNewObject(new Engine::Image("play/floor.png", x*BlockSize, y*BlockSize, BlockSize, BlockSize));
 			}
 			else {
+				TileType tempTILE = mapState[y][x];
+				std::cout<<tempTILE<<" "<<mapState[y][x]<<"\n";
 				AudioHelper::PlayAudio("digging.wav");
 				mapState[y][x] = TILE_DIRT;
+				if(tempTILE != mapState[y][x]) {
+					std::multimap<int, int> tempACT;
+					tempACT.insert(std::make_pair(y, x));
+					undoactions.push_back(tempACT);
+				}
 				TileMapGroup->AddNewObject(new Engine::Image("play/DIRT.png", x*BlockSize, y*BlockSize, BlockSize, BlockSize));
 			}
 			OnMouseMove(mx, my);
@@ -188,16 +203,16 @@ void CustomStageScene::ConstructUI() {
 	TurretButton* btn;
 	// Button 1
 	btn = new TurretButton("play/floor.png", "play/dirt.png",
-		Engine::Sprite("play/shovel.png", 1294, 136, 0, 0, 0, 0),
-		Engine::Sprite("play/shovel.png", 1294, 136, 0, 0, 0, 0)
-		, 1294, 136, 0);
+		Engine::Sprite("play/shovel.png", 1370, 136, 0, 0, 0, 0),
+		Engine::Sprite("play/shovel.png", 1370, 136, 0, 0, 0, 0)
+		, 1370, 136, 0);
 	btn->SetOnClickCallback(std::bind(&CustomStageScene::UIBtnClicked, this, 0));
 	UIGroup->AddNewControlObject(btn);
 	// Button 2
 	btn = new TurretButton("play/floor.png", "play/dirt.png",
-		Engine::Sprite("play/place.png", 1370, 136, 0, 0, 0, 0),
-		Engine::Sprite("play/place.png", 1370, 136, 0, 0, 0, 0)
-		, 1370, 136, 0);
+		Engine::Sprite("play/place.png", 1446, 136, 0, 0, 0, 0),
+		Engine::Sprite("play/place.png", 1446, 136, 0, 0, 0, 0)
+		, 1446, 136, 0);
 	btn->SetOnClickCallback(std::bind(&CustomStageScene::UIBtnClicked, this, 1));
 	UIGroup->AddNewControlObject(btn);
 	// Button 3
@@ -240,6 +255,14 @@ void CustomStageScene::ConstructUI() {
 	bn->SetOnClickCallback(std::bind(&CustomStageScene::UIBtnClicked, this, 3));
 	AddNewControlObject(bn);
 	AddNewObject(new Engine::Label("Save", "pirulen.ttf", 30, w-shift, h-shift-60, 0, 0, 0, 255, 0.5, 0.5));
+	// Button 5
+	bn = new Engine::ImageButton("play/undo.png", "play/sureundo.png", w-shift-100, h-shift-600, 100, 50);
+	bn->SetOnClickCallback(std::bind(&CustomStageScene::UIBtnClicked, this, 9));
+	AddNewControlObject(bn);
+	// Button 6
+	bn = new Engine::ImageButton("play/do.png", "play/suredo.png", w-shift, h-shift-600, 100, 50);
+	bn->SetOnClickCallback(std::bind(&CustomStageScene::UIBtnClicked, this, 10));
+	AddNewControlObject(bn);
 }
 
 void CustomStageScene::UIBtnClicked(int id) {
@@ -249,7 +272,7 @@ void CustomStageScene::UIBtnClicked(int id) {
 	// TODO: [CUSTOM-TURRET]: On callback, create the turret.
 	if (id == 0) {
 		previewTool = new Shovel(0, 0);
-		//tooltype = 0;
+		tooltype = 0;
 	}
 	else if (id == 1) {
 		previewTool = new Dirt(0, 0);
@@ -285,6 +308,46 @@ void CustomStageScene::UIBtnClicked(int id) {
 		if(NOWMAP == 7) return;
 		Engine::GameEngine::GetInstance().ChangeScene("custom");
 	}
+	else if (id == 9) {
+		if(!undoactions.empty()) {
+			int y, x;
+			std::multimap<int, int> it = undoactions.back();
+			for(auto iter = it.begin();iter!=it.end();iter++) {
+				y = iter->first;
+				x = iter->second;
+			}
+			if(mapState[y][x] == TILE_FLOOR) {
+				mapState[y][x] = TILE_DIRT;
+				TileMapGroup->AddNewObject(new Engine::Image("play/dirt.png", x*BlockSize, y*BlockSize, BlockSize, BlockSize));
+			}
+			else {
+				mapState[y][x] = TILE_FLOOR;
+				TileMapGroup->AddNewObject(new Engine::Image("play/FLOOR.png", x*BlockSize, y*BlockSize, BlockSize, BlockSize));
+			}
+			doactions.push_back(it);
+			undoactions.pop_back();
+		}
+	}
+	else if (id == 10) {
+		if(!doactions.empty()) {
+			int y, x;
+			std::multimap<int, int> it = doactions.back();
+			for(auto iter = it.begin();iter!=it.end();iter++) {
+				y = iter->first;
+				x = iter->second;
+			}
+			if(mapState[y][x] == TILE_DIRT) {
+				mapState[y][x] = TILE_FLOOR;
+				TileMapGroup->AddNewObject(new Engine::Image("play/FLOOR.png", x*BlockSize, y*BlockSize, BlockSize, BlockSize));
+			}
+			else {
+				mapState[y][x] = TILE_DIRT;
+				TileMapGroup->AddNewObject(new Engine::Image("play/dirt.png", x*BlockSize, y*BlockSize, BlockSize, BlockSize));
+			}
+			undoactions.push_back(it);
+			doactions.pop_back();
+		}
+	}
 	if (!previewTool)
 		return;
 	previewTool->Position = Engine::GameEngine::GetInstance().GetMousePosition();
@@ -316,7 +379,7 @@ bool CustomStageScene::CheckSpaceValid(int x, int y) {
 			return false;
 	}
 	// All enemy have path to exit.
-	mapState[y][x] = TILE_OCCUPIED;
+	//mapState[y][x] = TILE_OCCUPIED;
 	mapDistance = map;
 	for (auto& it : EnemyGroup->GetObjects())
 		dynamic_cast<Enemy*>(it)->UpdatePath(mapDistance);

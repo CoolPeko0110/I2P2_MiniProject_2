@@ -6,6 +6,7 @@
 #define CUSTOMSTAGESCENE_HPP
 #include <allegro5/allegro_audio.h>
 #include <list>
+#include <map>
 #include <memory>
 #include <utility>
 #include <vector>
@@ -51,7 +52,8 @@ public:
 	std::vector<std::vector<TileType>> tempMap;
 	std::list<std::vector<int>> tempEnemy;
 	std::vector<std::vector<int>> mapDistance;
-	std::list<int> actions;
+	std::list<std::multimap<int, int>> undoactions;
+	std::list<std::multimap<int, int>> doactions;
 	Tool* previewTool;
 	bool tooltype;
 	bool save;
