@@ -275,7 +275,6 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 				OnMouseMove(mx, my);
 			}
 			else if(previewTool) {
-				std::cout<<x<<" "<<y<<"\n";
 				EarnMoney(-previewTool->GetPrice());
 				AudioHelper::PlayAudio("digging.wav");
 				mapState[y][x] = TILE_FLOOR;

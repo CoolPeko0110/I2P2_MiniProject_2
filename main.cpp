@@ -11,8 +11,10 @@
 #include "Scene/StartScene.h"
 #include "Scene/SettingsScene.hpp"
 #include "Scene/CustomStageScene.hpp"
+#include "Scene/SavingScene.hpp"
 
 int SCORE;
+int NOWMAP = 3;
 
 int main(int argc, char **argv) {
 	Engine::LOG::SetConfig(true);
@@ -23,6 +25,7 @@ int main(int argc, char **argv) {
 	game.AddNewScene("start", new StartScene());
 	game.AddNewScene("scoreboard", new ScoreBoardScene());
 	game.AddNewScene("custom", new CustomStageScene());
+	game.AddNewScene("save", new SavingScene());
 	//
 	game.AddNewScene("settings", new SettingsScene());
 	game.AddNewScene("play", new PlayScene());

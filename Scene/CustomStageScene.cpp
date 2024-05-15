@@ -32,6 +32,7 @@ const int CustomStageScene::MapWidth = 20, CustomStageScene::MapHeight = 13;
 const int CustomStageScene::BlockSize = 64;
 const Engine::Point CustomStageScene::SpawnGridPoint = Engine::Point(-1, 0);
 const Engine::Point CustomStageScene::EndGridPoint = Engine::Point(MapWidth, MapHeight - 1);
+extern int NOWMAP;
 
 Engine::Point CustomStageScene::GetClientSize() {
 	return Engine::Point(MapWidth * BlockSize, MapHeight * BlockSize);
@@ -68,7 +69,7 @@ void CustomStageScene::Terminate() {
 					tempMap[i][j] = mapState[i][j];
 				}
 			}
-			std::string filename = std::string("Resource/map") + std::to_string(3) + ".txt";
+			std::string filename = std::string("Resource/RAMmap") + ".txt";
 			std::ofstream fout(filename);
 			for (int i = 0; i < MapHeight; i++) {
 				for (int j = 0; j < MapWidth; j++) {
@@ -118,6 +119,7 @@ void CustomStageScene::OnMouseUp(int button, int mx, int my) {
 		return;
 	const int x = mx / BlockSize;
 	const int y = my / BlockSize;
+	std::cout<<mapState[y][x]-TILE_DIRT<<"\n";
 	if (button & 1) {
 		if(!previewTool) return;
 		if(!CheckSpaceValid(x, y)) {
@@ -127,12 +129,13 @@ void CustomStageScene::OnMouseUp(int button, int mx, int my) {
 			return;
 		}
 		if(previewTool) {
-			AudioHelper::PlayAudio("digging.wav");
 			if(!tooltype) {
+				AudioHelper::PlayAudio("digging.wav");
 				mapState[y][x] = TILE_FLOOR;
 				TileMapGroup->AddNewObject(new Engine::Image("play/floor.png", x*BlockSize, y*BlockSize, BlockSize, BlockSize));
 			}
 			else {
+				AudioHelper::PlayAudio("digging.wav");
 				mapState[y][x] = TILE_DIRT;
 				TileMapGroup->AddNewObject(new Engine::Image("play/DIRT.png", x*BlockSize, y*BlockSize, BlockSize, BlockSize));
 			}
@@ -141,7 +144,7 @@ void CustomStageScene::OnMouseUp(int button, int mx, int my) {
 	}
 }
 void CustomStageScene::ReadMap() {
-	std::string filename = std::string("Resource/map") + std::to_string(3) + ".txt";
+	std::string filename = std::string("Resource/map") + std::to_string(NOWMAP) + ".txt";
 	// Read map file.
 	char c;
 	std::vector<bool> mapData;
@@ -181,7 +184,7 @@ void CustomStageScene::ConstructUI() {
 	// Background
 	UIGroup->AddNewObject(new Engine::Image("play/sand.png", 1280, 0, 320, 832));
 	// Text
-	UIGroup->AddNewObject(new Engine::Label(std::string("Stage ") + std::to_string(MapId), "pirulen.ttf", 32, 1294, 0));
+	UIGroup->AddNewObject(new Engine::Label(std::string("CUSTOM"), "pirulen.ttf", 32, 1294, 0));
 	TurretButton* btn;
 	// Button 1
 	btn = new TurretButton("play/floor.png", "play/dirt.png",
@@ -202,15 +205,41 @@ void CustomStageScene::ConstructUI() {
 	int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
 	int shift = 135 + 25;
 	Engine::ImageButton *bn;
-	bn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", w-shift-50, h-shift, 100, 50);
+	//
+	bn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", w-shift-100, h-shift-380, 200, 40);
+	bn->SetOnClickCallback(std::bind(&CustomStageScene::UIBtnClicked, this, 4));
+	AddNewControlObject(bn);
+	AddNewObject(new Engine::Label("MAP 3", "pirulen.ttf", 30, w-shift, h-shift-360, 0, 0, 0, 255, 0.5, 0.5));
+	//
+	bn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", w-shift-100, h-shift-330, 200, 40);
+	bn->SetOnClickCallback(std::bind(&CustomStageScene::UIBtnClicked, this, 5));
+	AddNewControlObject(bn);
+	AddNewObject(new Engine::Label("MAP 4", "pirulen.ttf", 30, w-shift, h-shift-310, 0, 0, 0, 255, 0.5, 0.5));
+	//
+	bn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", w-shift-100, h-shift-280, 200, 40);
+	bn->SetOnClickCallback(std::bind(&CustomStageScene::UIBtnClicked, this, 6));
+	AddNewControlObject(bn);
+	AddNewObject(new Engine::Label("MAP 5", "pirulen.ttf", 30, w-shift, h-shift-260, 0, 0, 0, 255, 0.5, 0.5));
+	//
+	bn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", w-shift-100, h-shift-230, 200, 40);
+	bn->SetOnClickCallback(std::bind(&CustomStageScene::UIBtnClicked, this, 7));
+	AddNewControlObject(bn);
+	AddNewObject(new Engine::Label("MAP 6", "pirulen.ttf", 30, w-shift, h-shift-210, 0, 0, 0, 255, 0.5, 0.5));
+	//
+	bn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", w-shift-100, h-shift-180, 200, 40);
+	bn->SetOnClickCallback(std::bind(&CustomStageScene::UIBtnClicked, this, 8));
+	AddNewControlObject(bn);
+	AddNewObject(new Engine::Label("MAP 7", "pirulen.ttf", 30, w-shift, h-shift-160, 0, 0, 0, 255, 0.5, 0.5));
+	//
+	bn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", w-shift-100, h-shift, 200, 100);
 	bn->SetOnClickCallback(std::bind(&CustomStageScene::UIBtnClicked, this, 2));
 	AddNewControlObject(bn);
-	AddNewObject(new Engine::Label("Back", "pirulen.ttf", 20, w-shift, h-shift+25, 0, 0, 0, 255, 0.5, 0.5));
+	AddNewObject(new Engine::Label("Back", "pirulen.ttf", 30, w-shift, h-shift+50, 0, 0, 0, 255, 0.5, 0.5));
 	// Button 4
-	bn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", w-shift-50, h-shift-80, 100, 50);
+	bn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", w-shift-100, h-shift-110, 200, 100);
 	bn->SetOnClickCallback(std::bind(&CustomStageScene::UIBtnClicked, this, 3));
 	AddNewControlObject(bn);
-	AddNewObject(new Engine::Label("Play", "pirulen.ttf", 20, w-shift, h-shift-55, 0, 0, 0, 255, 0.5, 0.5));
+	AddNewObject(new Engine::Label("Save", "pirulen.ttf", 30, w-shift, h-shift-60, 0, 0, 0, 255, 0.5, 0.5));
 }
 
 void CustomStageScene::UIBtnClicked(int id) {
@@ -230,9 +259,31 @@ void CustomStageScene::UIBtnClicked(int id) {
 		Engine::GameEngine::GetInstance().ChangeScene("stage-select");
 	}
 	else if (id == 3) {
-		PlayScene* scene = dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetScene("play"));
-		scene->MapId = 3;
-		Engine::GameEngine::GetInstance().ChangeScene("play");
+		Engine::GameEngine::GetInstance().ChangeScene("save");
+	}
+	else if (id == 4) {
+		if(NOWMAP == 3) return;
+		NOWMAP = 3;
+		Engine::GameEngine::GetInstance().ChangeScene("custom");
+	}
+	else if (id == 5) {
+		if(NOWMAP == 4) return;
+		NOWMAP = 4;
+		Engine::GameEngine::GetInstance().ChangeScene("custom");
+	}
+	else if (id == 6) {
+		if(NOWMAP == 5) return;
+		NOWMAP = 5;
+		Engine::GameEngine::GetInstance().ChangeScene("custom");
+	}
+	else if (id == 7) {
+		if(NOWMAP == 6) return;
+		NOWMAP = 6;
+		Engine::GameEngine::GetInstance().ChangeScene("custom");
+	}
+	else if (id == 8) {
+		if(NOWMAP == 7) return;
+		Engine::GameEngine::GetInstance().ChangeScene("custom");
 	}
 	if (!previewTool)
 		return;
