@@ -106,6 +106,12 @@ add_executable(2024_I2P2_TowerDefense_with_answer
         Bullet/ShapaBullet.hpp
         Enemy/PretenderEnemy.cpp
         Enemy/PretenderEnemy.hpp
+        Turret/Shovel.cpp
+        Turret/Shovel.hpp
+        Turret/Tool.cpp
+        Turret/Tool.hpp
+        Scene/CustomStageScene.cpp
+        Scene/CustomStageScene.hpp
         #        UI/Component/TextInput.cpp
 #        UI/Component/TextInput.hpp
 )

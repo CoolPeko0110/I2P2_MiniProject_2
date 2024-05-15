@@ -19,6 +19,7 @@
 #include "Turret/MachineGunTurret.hpp"
 #include "Turret/MissileTurret.hpp"
 #include "Turret/ShapaTurret.hpp"
+#include "Turret/Shovel.hpp"
 #include "UI/Animation/Plane.hpp"
 #include "Enemy/PlaneEnemy.hpp"
 #include "PlayScene.hpp"
@@ -29,6 +30,7 @@
 #include "Enemy/SoldierEnemy.hpp"
 #include "Enemy/TankEnemy.hpp"
 #include "Turret/TurretButton.hpp"
+#include "Turret/Tool.hpp"
 extern int SCORE;
 
 bool PlayScene::DebugMode = false;
@@ -187,6 +189,11 @@ void PlayScene::Update(float deltaTime) {
 		// To keep responding when paused.
 		preview->Update(deltaTime);
 	}
+	if (previewTool) {
+		previewTool->Position = Engine::GameEngine::GetInstance().GetMousePosition();
+		// To keep responding when paused.
+		previewTool->Update(deltaTime);
+	}
 }
 void PlayScene::Draw() const {
 	IScene::Draw();
@@ -205,10 +212,16 @@ void PlayScene::Draw() const {
 	}
 }
 void PlayScene::OnMouseDown(int button, int mx, int my) {
-	if ((button & 1) && !imgTarget->Visible && preview) {
+	if ((button & 1) && !imgTarget->Visible && (preview||previewTool)) {
 		// Cancel turret construct.
-		UIGroup->RemoveObject(preview->GetObjectIterator());
-		preview = nullptr;
+		if(preview) {
+			UIGroup->RemoveObject(preview->GetObjectIterator());
+			preview = nullptr;
+		}
+		else if(previewTool) {
+			UIGroup->RemoveObject(previewTool->GetObjectIterator());
+			previewTool = nullptr;
+		}
 	}
 	IScene::OnMouseDown(button, mx, my);
 }
@@ -216,7 +229,7 @@ void PlayScene::OnMouseMove(int mx, int my) {
 	IScene::OnMouseMove(mx, my);
 	const int x = mx / BlockSize;
 	const int y = my / BlockSize;
-	if (!preview || x < 0 || x >= MapWidth || y < 0 || y >= MapHeight) {
+	if ((!preview && !previewTool) || x < 0 || x >= MapWidth || y < 0 || y >= MapHeight) {
 		imgTarget->Visible = false;
 		return;
 	}
@@ -232,7 +245,7 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 	const int y = my / BlockSize;
 	if (button & 1) {
 		if (mapState[y][x] != TILE_OCCUPIED) {
-			if (!preview)
+			if (!preview && !previewTool)
 				return;
 			// Check if valid.
 			if (!CheckSpaceValid(x, y)) {
@@ -242,24 +255,33 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 				return;
 			}
 			// Purchase.
-			EarnMoney(-preview->GetPrice());
-			// Remove Preview.
-			preview->GetObjectIterator()->first = false;
-			UIGroup->RemoveObject(preview->GetObjectIterator());
-			// Construct real turret.
-			preview->Position.x = x * BlockSize + BlockSize / 2;
-			preview->Position.y = y * BlockSize + BlockSize / 2;
-			preview->Enabled = true;
-			preview->Preview = false;
-			preview->Tint = al_map_rgba(255, 255, 255, 255);
-			TowerGroup->AddNewObject(preview);
-			// To keep responding when paused.
-			preview->Update(0);
-			// Remove Preview.
-			preview = nullptr;
+			if(preview) {
+				EarnMoney(-preview->GetPrice());
+				// Remove Preview.
+				preview->GetObjectIterator()->first = false;
+				UIGroup->RemoveObject(preview->GetObjectIterator());
+				// Construct real turret.
+				preview->Position.x = x * BlockSize + BlockSize / 2;
+				preview->Position.y = y * BlockSize + BlockSize / 2;
+				preview->Enabled = true;
+				preview->Preview = false;
+				preview->Tint = al_map_rgba(255, 255, 255, 255);
+				TowerGroup->AddNewObject(preview);
+				// To keep responding when paused.
+				preview->Update(0);
+				// Remove Preview.
+				preview = nullptr;
 
-			mapState[y][x] = TILE_OCCUPIED;
-			OnMouseMove(mx, my);
+				mapState[y][x] = TILE_OCCUPIED;
+				OnMouseMove(mx, my);
+			}
+			else if(previewTool) {
+				EarnMoney(-previewTool->GetPrice());
+				AudioHelper::PlayAudio("digging.wav");
+				TileMapGroup->AddNewObject(new Engine::Image("play/floor.png", x*BlockSize, y*BlockSize, BlockSize, BlockSize));
+				mapState[y][x] = TILE_OCCUPIED;
+				OnMouseMove(mx, my);
+			}
 		}
 	}
 }
@@ -407,6 +429,13 @@ void PlayScene::ConstructUI() {
 	btn->SetOnClickCallback(std::bind(&PlayScene::UIBtnClicked, this, 3));
 	UIGroup->AddNewControlObject(btn);
 	//
+	btn = new TurretButton("play/floor.png", "play/dirt.png",
+			Engine::Sprite("play/shovel.png", 1294, 304, 0, 0, 0, 0),
+			Engine::Sprite("play/shovel.png", 1294, 304, 0, 0, 0, 0)
+			, 1294, 304, Shovel::Price);
+	btn->SetOnClickCallback(std::bind(&PlayScene::UIBtnClicked, this, 4));
+	UIGroup->AddNewControlObject(btn);
+	//
 	int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
 	int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
 	int shift = 135 + 25;
@@ -416,25 +445,50 @@ void PlayScene::ConstructUI() {
 }
 
 void PlayScene::UIBtnClicked(int id) {
-	if (preview)
-		UIGroup->RemoveObject(preview->GetObjectIterator());
-    // TODO: [CUSTOM-TURRET]: On callback, create the turret.
-	if (id == 0 && money >= MachineGunTurret::Price)
+	int tag = 0;
+	if (preview || previewTool) {
+		if(preview) UIGroup->RemoveObject(preview->GetObjectIterator());
+		else if(previewTool) UIGroup->RemoveObject(previewTool->GetObjectIterator());
+	}
+	// TODO: [CUSTOM-TURRET]: On callback, create the turret.
+	if (id == 0 && money >= MachineGunTurret::Price) {
 		preview = new MachineGunTurret(0, 0);
-	else if (id == 1 && money >= LaserTurret::Price)
+		tag = 0;
+	}
+	else if (id == 1 && money >= LaserTurret::Price) {
 		preview = new LaserTurret(0, 0);
-	else if (id == 2 && money >= MissileTurret::Price)
+		tag = 0;
+	}
+	else if (id == 2 && money >= MissileTurret::Price){
 		preview = new MissileTurret(0, 0);
-	else if (id == 3 && money >= ShapaTurret::Price)
+		tag = 0;
+	}
+	else if (id == 3 && money >= ShapaTurret::Price) {
 		preview = new ShapaTurret(0, 0);
-	if (!preview)
+		tag = 0;
+	}
+	else if (id == 4 && money >= Shovel::Price) {
+		previewTool = new Shovel(0, 0);
+		tag = 1;
+	}
+	if (!preview && !previewTool)
 		return;
-	preview->Position = Engine::GameEngine::GetInstance().GetMousePosition();
-	preview->Tint = al_map_rgba(255, 255, 255, 200);
-	preview->Enabled = false;
-	preview->Preview = true;
-	UIGroup->AddNewObject(preview);
-	OnMouseMove(Engine::GameEngine::GetInstance().GetMousePosition().x, Engine::GameEngine::GetInstance().GetMousePosition().y);
+	if(!tag) {
+		preview->Position = Engine::GameEngine::GetInstance().GetMousePosition();
+		preview->Tint = al_map_rgba(255, 255, 255, 200);
+		preview->Enabled = false;
+		preview->Preview = true;
+		UIGroup->AddNewObject(preview);
+		OnMouseMove(Engine::GameEngine::GetInstance().GetMousePosition().x, Engine::GameEngine::GetInstance().GetMousePosition().y);
+	}
+	else {
+		previewTool->Position = Engine::GameEngine::GetInstance().GetMousePosition();
+		previewTool->Tint = al_map_rgba(255, 255, 255, 200);
+		previewTool->Enabled = false;
+		previewTool->Preview = true;
+		UIGroup->AddNewObject(previewTool);
+		OnMouseMove(Engine::GameEngine::GetInstance().GetMousePosition().x, Engine::GameEngine::GetInstance().GetMousePosition().y);
+	}
 }
 
 bool PlayScene::CheckSpaceValid(int x, int y) {
