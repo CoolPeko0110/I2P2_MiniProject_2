@@ -149,7 +149,6 @@ void PlayScene::Update(float deltaTime) {
 				delete EffectGroup;
 				delete UIGroup;
 				delete imgTarget;*/
-				winornot = 1;
 				Engine::GameEngine::GetInstance().ChangeScene("win");
 			}
 			continue;
@@ -276,10 +275,11 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 				OnMouseMove(mx, my);
 			}
 			else if(previewTool) {
+				std::cout<<x<<" "<<y<<"\n";
 				EarnMoney(-previewTool->GetPrice());
 				AudioHelper::PlayAudio("digging.wav");
+				mapState[y][x] = TILE_FLOOR;
 				TileMapGroup->AddNewObject(new Engine::Image("play/floor.png", x*BlockSize, y*BlockSize, BlockSize, BlockSize));
-				mapState[y][x] = TILE_OCCUPIED;
 				OnMouseMove(mx, my);
 			}
 		}
@@ -320,6 +320,10 @@ void PlayScene::OnKeyDown(int keyCode) {
 		UIBtnClicked(2);
 	}
 	// TODO: [CUSTOM-TURRET]: Make specific key to create the turret.
+	else if (keyCode == ALLEGRO_KEY_E) {
+		// Hotkey for ShapaTurret.
+		UIBtnClicked(3);
+	}
 	else if (keyCode >= ALLEGRO_KEY_0 && keyCode <= ALLEGRO_KEY_9) {
 		// Hotkey for Speed up.
 		SpeedMult = keyCode - ALLEGRO_KEY_0;

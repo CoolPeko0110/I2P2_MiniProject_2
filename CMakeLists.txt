@@ -112,6 +112,8 @@ add_executable(2024_I2P2_TowerDefense_with_answer
         Turret/Tool.hpp
         Scene/CustomStageScene.cpp
         Scene/CustomStageScene.hpp
+        Turret/Dirt.cpp
+        Turret/Dirt.hpp
         #        UI/Component/TextInput.cpp
 #        UI/Component/TextInput.hpp
 )

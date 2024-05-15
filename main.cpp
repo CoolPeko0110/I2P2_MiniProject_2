@@ -10,6 +10,7 @@
 #include "Scene/WinScene.hpp"
 #include "Scene/StartScene.h"
 #include "Scene/SettingsScene.hpp"
+#include "Scene/CustomStageScene.hpp"
 
 int SCORE;
 
@@ -21,6 +22,7 @@ int main(int argc, char **argv) {
 	game.AddNewScene("stage-select", new StageSelectScene());
 	game.AddNewScene("start", new StartScene());
 	game.AddNewScene("scoreboard", new ScoreBoardScene());
+	game.AddNewScene("custom", new CustomStageScene());
 	//
 	game.AddNewScene("settings", new SettingsScene());
 	game.AddNewScene("play", new PlayScene());
