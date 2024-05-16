@@ -306,6 +306,7 @@ void CustomStageScene::UIBtnClicked(int id) {
 	}
 	else if (id == 8) {
 		if(NOWMAP == 7) return;
+		NOWMAP = 7;
 		Engine::GameEngine::GetInstance().ChangeScene("custom");
 	}
 	else if (id == 9) {

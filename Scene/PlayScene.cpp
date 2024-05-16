@@ -428,7 +428,7 @@ void PlayScene::ConstructUI() {
 	btn = new TurretButton("play/floor.png", "play/dirt.png",
 			Engine::Sprite("play/tower-base.png", 1294, 220, 0, 0, 0, 0),
 			Engine::Sprite("play/turret-8.png", 1294, 220-11, 0, 0, 0, 0)
-			, 1294, 220, MissileTurret::Price);
+			, 1294, 220, ShapaTurret::Price);
 	btn->SetOnClickCallback(std::bind(&PlayScene::UIBtnClicked, this, 3));
 	UIGroup->AddNewControlObject(btn);
 	//
