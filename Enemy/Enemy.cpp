@@ -9,6 +9,8 @@
 #include "Bullet/Bullet.hpp"
 #include "UI/Animation/DirtyEffect.hpp"
 #include "Enemy.hpp"
+
+#include "Engine/Collider.hpp"
 #include "UI/Animation/ExplosionEffect.hpp"
 #include "Engine/GameEngine.hpp"
 #include "Engine/Group.hpp"
@@ -24,7 +26,7 @@ void Enemy::OnExplode() {
 	getPlayScene()->EffectGroup->AddNewObject(new ExplosionEffect(Position.x, Position.y));
 	std::random_device dev;
 	std::mt19937 rng(dev());
-	std::uniform_int_distribution<std::mt19937::result_type> distId(1, 3);
+	std::uniform_int_distribution<std::mt19937::result_type> distId(1, 4);
 	std::uniform_int_distribution<std::mt19937::result_type> dist(1, 20);
 	for (int i = 0; i < 10; i++) {
 		// Random add 10 dirty effects.
@@ -38,7 +40,42 @@ Enemy::Enemy(std::string img, float x, float y, float radius, float speed, float
 }
 void Enemy::Hit(float damage) {
 	hp -= damage;
-	if (hp <= 0) {
+	if(this->money == 500 && this->speed < 150) this->speed *= 1.2;
+	if(hp <= 0 && damage == 10) {
+		PlayScene* scene = getPlayScene();
+		for (auto& it : scene->EnemyGroup->GetObjects()) {
+			Enemy* enemy = dynamic_cast<Enemy*>(it);
+			std::cout<<"fuck you "<<path.back().x<<" "<<path.back().y<<" "<<enemy->path.back().x<<" "<<enemy->path.back().y<<"\n";
+			if (!enemy->Visible || enemy == this)
+				continue;
+			if (path.back().x > enemy->path.back().x && path.back().y == enemy->path.back().y) {
+				scene->GroundEffectGroup->AddNewObject(new DirtyEffect("play/outch.png", 1, enemy->path.back().x*64+64, enemy->path.back().y*64));
+				enemy->Hit(damage-5);
+			}
+			if (path.back().x < enemy->path.back().x && path.back().y == enemy->path.back().y) {
+				scene->GroundEffectGroup->AddNewObject(new DirtyEffect("play/outch.png", 1, enemy->path.back().x*64+64, enemy->path.back().y*64));
+				enemy->Hit(damage-5);
+			}
+			if (path.back().x == enemy->path.back().x && path.back().y < enemy->path.back().y) {
+				scene->GroundEffectGroup->AddNewObject(new DirtyEffect("play/outch.png", 1, enemy->path.back().x*64+64, enemy->path.back().y*64));
+				enemy->Hit(damage-5);
+			}
+			if (path.back().x == enemy->path.back().x && path.back().y > enemy->path.back().y) {
+				scene->GroundEffectGroup->AddNewObject(new DirtyEffect("play/outch.png", 1, enemy->path.back().x*64+64, enemy->path.back().y*64));
+				enemy->Hit(damage-5);
+			}
+		}
+		OnExplode();
+		// Remove all turret's reference to target.
+		for (auto& it: lockedTurrets)
+			it->Target = nullptr;
+		for (auto& it: lockedBullets)
+			it->Target = nullptr;
+		getPlayScene()->EarnMoney(money);
+		getPlayScene()->EnemyGroup->RemoveObject(objectIterator);
+		AudioHelper::PlayAudio("explosion.wav");
+	}
+	else if (hp <= 0) {
 		OnExplode();
 		// Remove all turret's reference to target.
 		for (auto& it: lockedTurrets)

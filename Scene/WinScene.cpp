@@ -38,8 +38,7 @@ void WinScene::Initialize() {
 void WinScene::Terminate() {
 	time_t now = time(0);
 	tm *ltm = localtime(&now);
-	std::string date = std::to_string(1+ltm->tm_mon) + "/" + std::to_string(ltm->tm_mday);
-
+	std::string date = std::to_string(1+ltm->tm_mon) + "/" + std::to_string(ltm->tm_mday) + "_" + std::to_string(ltm->tm_hour) + ":" + std::to_string(ltm->tm_min);
 	char str1[100];
 	std::string temp = std::to_string(SCORE);
 	int i;
@@ -75,6 +74,9 @@ void WinScene::OnKeyDown(int keyCode) {
 	IScene::OnKeyDown(keyCode);
 	if(keyCode<=ALLEGRO_KEY_Z && keyCode>=ALLEGRO_KEY_A) {
 		keyStrokes.push_back(keyCode-ALLEGRO_KEY_A+'A');
+	}
+	else if(keyCode>=ALLEGRO_KEY_0 && keyCode<=ALLEGRO_KEY_9) {
+		keyStrokes.push_back(keyCode-ALLEGRO_KEY_0+'0');
 	}
 	else if(keyCode == ALLEGRO_KEY_BACKSPACE) {
 		if(!keyStrokes.empty()) keyStrokes.pop_back();

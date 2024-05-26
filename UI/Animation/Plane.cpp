@@ -5,6 +5,7 @@
 #include "Engine/AudioHelper.hpp"
 #include "Engine/Collider.hpp"
 #include "Enemy/Enemy.hpp"
+#include "Turret/Turret.hpp"
 #include "Engine/GameEngine.hpp"
 #include "Engine/Group.hpp"
 #include "Engine/IObject.hpp"
