@@ -7,6 +7,7 @@
 #include <allegro5/allegro_audio.h>
 #include <memory>
 #include "Engine/IScene.hpp"
+#include <vector>
 
 class SavingScene final : public Engine::IScene {
 private:
