@@ -116,6 +116,12 @@ add_executable(2024_I2P2_TowerDefense_with_answer
         Turret/Dirt.hpp
         Scene/SavingScene.cpp
         Scene/SavingScene.hpp
+        Scene/FirstScene.cpp
+        Scene/FirstScene.hpp
+        Scene/SecondScene.cpp
+        Scene/SecondScene.hpp
+        Scene/QuetionScene.cpp
+        Scene/QuetionScene.hpp
         #        UI/Component/TextInput.cpp
 #        UI/Component/TextInput.hpp
 )
