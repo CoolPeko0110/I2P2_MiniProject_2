@@ -47,16 +47,17 @@ void first_scene::Initialize() {
     firstwhichone = rnd;
     int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
     int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
-    firstblood = new Engine::Image("play/first" + std::to_string(rnd) + ".png", w/2-64, h/2-64, 128, 128);
-    black = new Engine::Image("scoreboard/black.png", w/2-200, h/2-100, 800, 512);
+    //black = new Engine::Image("scoreboard/black.png", w/2-200, h/2, 800, 812);
+    //black->Draw();
+    AddNewObject(new Engine::Label("Play", "pirulen.ttf", 48, w/2, h / 4 - 250, 255, 0, 0, 255, 0.5, 0.5));
 }
 void first_scene::Terminate() {
     IScene::Terminate();
 }
 
 void first_scene::Draw() const {
-    black->Draw();
-    firstblood->Draw();
+    //black->Draw();
+    //firstblood->Draw();
 }
 
 void first_scene::Update(float deltaTime) {

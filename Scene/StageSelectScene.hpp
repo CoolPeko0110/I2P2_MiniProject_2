@@ -5,15 +5,13 @@
 #include "Engine/IScene.hpp"
 
 class StageSelectScene final : public Engine::IScene {
-private:
-	std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> bgmInstance;
 public:
 	explicit StageSelectScene() = default;
 	void Initialize() override;
 	void Terminate() override;
 	void PlayOnClick(int stage);
-    void ScoreboardOnClick();
-	void BackOnClick(int stage);
+	void Update(float deltaTime) override;
+	float reload = 1000000;
 };
 
 #endif // STAGESELECTSCENE_HPP

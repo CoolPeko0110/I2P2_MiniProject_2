@@ -20,8 +20,12 @@ int SCORE;
 int NOWMAP = 3;
 int whichone;
 int firstwhichone;
+int color;
+float anstime;
 
 int main(int argc, char **argv) {
+	color = 0;
+	anstime = 0;
 	Engine::LOG::SetConfig(true);
 	Engine::GameEngine& game = Engine::GameEngine::GetInstance();
 
@@ -43,7 +47,7 @@ int main(int argc, char **argv) {
 
     // TODO: [HACKATHON-1-SCENE] (4/4): Change the start scene
 	//game.Start("stage-select", 60, 1600, 832);
-	game.Start("start", 60, 1920, 1080);
+	game.Start("start", 60, 1920, 800);
 	//
 	return 0;
 }

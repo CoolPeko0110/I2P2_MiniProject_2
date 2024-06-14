@@ -43,7 +43,7 @@
 #include <random>
 extern int whichone;
 void second_scene::Initialize() {
-    reload = 0.2;
+    reload = 1;
     std::random_device dev;
     std::mt19937 rng(dev());
     std::uniform_real_distribution<> dist(1, 3);
@@ -51,8 +51,8 @@ void second_scene::Initialize() {
     whichone = rnd;
     int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
     int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
-    secondblood = new Engine::Image("play/second" + std::to_string(rnd) + ".png", w/2-64, h/2-64, 140, 128);
-    black = new Engine::Image("scoreboard/black.png", w/2-200, h/2-100, 800, 512);
+    secondblood = new Engine::Image("play/second" + std::to_string(rnd) + ".png", w/2-64, h/2-164, 140, 128);
+    black = new Engine::Image("scoreboard/black.png", w/2-400, h/2-400, 800, 812);
 }
 void second_scene::Terminate() {
     IScene::Terminate();
@@ -60,7 +60,7 @@ void second_scene::Terminate() {
 
 void second_scene::Draw() const {
     black->Draw();
-    secondblood->Draw();
+    if(reload <= 0.1) secondblood->Draw();
 }
 
 void second_scene::Update(float deltaTime) {
