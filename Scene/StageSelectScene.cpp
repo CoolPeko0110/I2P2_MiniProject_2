@@ -78,6 +78,9 @@ void StageSelectScene::Initialize() {
         case 12:
             AddNewObject(new Engine::Label("white", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 0, 0, 255, 255, 0.5, 0.5));
         break;
+        case 13:
+            AddNewObject(new Engine::Label("black", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 169, 169, 169, 255, 0.5, 0.5));
+        break;
         default:
             break;
     }
@@ -97,7 +100,7 @@ void StageSelectScene::PlayOnClick(int stage) {
         anstime += 2000 - reload;
         Engine::GameEngine::GetInstance().ChangeScene("stage-select");
     }
-    else if(color <12) {
+    else if(color < 13) {
         color++;
         anstime2 += 2000 - reload;
         Engine::GameEngine::GetInstance().ChangeScene("stage-select");
