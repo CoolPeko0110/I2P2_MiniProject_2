@@ -17,6 +17,7 @@
 
 extern int color;
 extern float anstime;
+extern float anstime2;
 
 void StageSelectScene::Initialize() {
     reload = 2000;
@@ -34,30 +35,49 @@ void StageSelectScene::Initialize() {
     std::mt19937 rng(dev());
     std::uniform_real_distribution<> dist(1, 3);
     int rnd = dist(rng);
-    AddNewObject(new Engine::Label("Custom", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 255, 0, 0, 0, 0.5, 0.5));
+    if(color >= 7 ) AddNewObject(new Engine::Label("stage 2", "pirulen.ttf", 20, halfW, halfH / 2 - 250, 255, 255, 255, 0, 0.5, 0.5));
+    else AddNewObject(new Engine::Label("stage 1", "pirulen.ttf", 20, halfW, halfH / 2 - 250, 255, 255, 255, 0, 0.5, 0.5));
     //
     switch(color) {
         case 0:
-            AddNewObject(new Engine::Label("green", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 255, 0, 0, 255, 0.5, 0.5));
+            AddNewObject(new Engine::Label("red", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 255, 0, 0, 255, 0.5, 0.5));
             break;
         case 1:
-            AddNewObject(new Engine::Label("red", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 0, 0, 255, 255, 0.5, 0.5));
+            AddNewObject(new Engine::Label("blue", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 0, 0, 255, 255, 0.5, 0.5));
             break;
         case 2:
-            AddNewObject(new Engine::Label("yellow", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 0, 255, 0, 255, 0.5, 0.5));
+            AddNewObject(new Engine::Label("green", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 0, 255, 0, 255, 0.5, 0.5));
             break;
         case 3:
-            AddNewObject(new Engine::Label("purple", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 255, 130, 71, 255, 0.5, 0.5));
+            AddNewObject(new Engine::Label("orange", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 255, 130, 71, 255, 0.5, 0.5));
             break;
         case 4:
-            AddNewObject(new Engine::Label("blue", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 255, 130, 171, 255, 0.5, 0.5));
+            AddNewObject(new Engine::Label("pink", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 255, 130, 171, 255, 0.5, 0.5));
             break;
         case 5:
-            AddNewObject(new Engine::Label("pink", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 255, 255, 0, 255, 0.5, 0.5));
+            AddNewObject(new Engine::Label("yellow", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 255, 255, 0, 255, 0.5, 0.5));
             break;
         case 6:
-            AddNewObject(new Engine::Label("white", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 0, 0, 255, 255, 0.5, 0.5));
+            AddNewObject(new Engine::Label("white", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 255, 255, 255, 255, 0.5, 0.5));
             break;
+        case 7:
+            AddNewObject(new Engine::Label("red", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 0, 0, 255, 255, 0.5, 0.5));
+        break;
+        case 8:
+            AddNewObject(new Engine::Label("yellow", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 0, 255, 0, 255, 0.5, 0.5));
+        break;
+        case 9:
+            AddNewObject(new Engine::Label("purple", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 255, 130, 71, 255, 0.5, 0.5));
+        break;
+        case 10:
+            AddNewObject(new Engine::Label("blue", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 255, 130, 171, 255, 0.5, 0.5));
+        break;
+        case 11:
+            AddNewObject(new Engine::Label("pink", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 255, 255, 0, 255, 0.5, 0.5));
+        break;
+        case 12:
+            AddNewObject(new Engine::Label("white", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 0, 0, 255, 255, 0.5, 0.5));
+        break;
         default:
             break;
     }
@@ -65,7 +85,6 @@ void StageSelectScene::Initialize() {
     // Not safe if release resource while playing, however we only free while change scene, so it's fine.
 }
 void StageSelectScene::Update(float deltaTime) {
-    std::cout<<reload<<std::endl;
     reload -= deltaTime;
 }
 
@@ -76,12 +95,15 @@ void StageSelectScene::PlayOnClick(int stage) {
     if(color < 6) {
         color++;
         anstime += 2000 - reload;
-        std::cout<<anstime<<"\n";
+        Engine::GameEngine::GetInstance().ChangeScene("stage-select");
+    }
+    else if(color <12) {
+        color++;
+        anstime2 += 2000 - reload;
         Engine::GameEngine::GetInstance().ChangeScene("stage-select");
     }
     else {
         anstime += 2000 - reload;
-        std::cout<<anstime<<"\n";
         Engine::GameEngine::GetInstance().ChangeScene("start");
     }
 }

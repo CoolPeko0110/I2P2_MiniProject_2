@@ -22,10 +22,12 @@ int whichone;
 int firstwhichone;
 int color;
 float anstime;
+float anstime2;
 
 int main(int argc, char **argv) {
 	color = 0;
 	anstime = 0;
+	anstime2 = 0;
 	Engine::LOG::SetConfig(true);
 	Engine::GameEngine& game = Engine::GameEngine::GetInstance();
 

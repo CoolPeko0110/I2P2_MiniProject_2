@@ -20,6 +20,7 @@
 
 extern int color;
 extern float anstime;
+extern float anstime2;
 
 void StartScene::Initialize() {
     color = 0;
@@ -33,7 +34,9 @@ void StartScene::Initialize() {
     btn->SetOnClickCallback(std::bind(&StartScene::PlayOnClick, this, 1));
     AddNewControlObject(btn);
     AddNewObject(new Engine::Label("Play", "pirulen.ttf", 48, halfW, halfH / 2 + 250, 255, 255, 0, 255, 0.5, 0.5));
-    if(anstime) AddNewObject(new Engine::Label(std::to_string(anstime), "pirulen.ttf", 48, halfW, halfH / 2 + 400, 255, 255, 0, 255, 0.5, 0.5));
+    if(anstime) AddNewObject(new Engine::Label("Stage 1: " + std::to_string(anstime), "pirulen.ttf", 48, halfW, halfH / 2 + 400, 255, 255, 0, 255, 0.5, 0.5));
+    if(anstime2) AddNewObject(new Engine::Label("Stage 2: " + std::to_string(anstime2), "pirulen.ttf", 48, halfW, halfH / 2 + 450, 255, 255, 0, 255, 0.5, 0.5));
+    anstime2 = 0;
     anstime = 0;
 }
 void StartScene::Terminate() {
