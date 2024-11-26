@@ -22,13 +22,3 @@
 | Scoreboard Date Time  |    3%     |     -     |
 | Record User Name      |    7%     |     -     |
 | Other Bonus Functions |   ≤10%    |     -     |
-
-<!-- Please describe the bonus optimizations or features you have implemented in the above table. -->
-
----
-
-<style>
-table th{
-    width: 100%;
-}
-</style>
